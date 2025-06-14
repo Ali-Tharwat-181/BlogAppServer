@@ -3,7 +3,9 @@ import * as postServices from "../services/postServices.mjs";
 
 export const getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find().populate("createdBy", "name");
+    const posts = await Post.find()
+      .populate("createdBy", "name")
+      .sort({ createdAt: -1 });
     res.json(posts);
   } catch (err) {
     res.status(500).json({ error: "Server error" });
@@ -36,12 +38,10 @@ export const createPost = async (req, res) => {
       coverImage,
       createdBy: req.user._id,
     });
-    const populatedPost = await Post.findById(post._id)
-      .populate({
-        path: "createdBy",
-        select: "name",
-      })
-      .sort({ createdAt: -1 });
+    const populatedPost = await Post.findById(post._id).populate({
+      path: "createdBy",
+      select: "name",
+    });
 
     res.status(201).json(populatedPost);
   } catch (err) {
