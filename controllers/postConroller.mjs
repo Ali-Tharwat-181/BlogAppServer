@@ -36,10 +36,12 @@ export const createPost = async (req, res) => {
       coverImage,
       createdBy: req.user._id,
     });
-    const populatedPost = await Post.findById(post._id).populate({
-      path: "createdBy",
-      select: "name",
-    });
+    const populatedPost = await Post.findById(post._id)
+      .populate({
+        path: "createdBy",
+        select: "name",
+      })
+      .sort({ createdAt: -1 });
 
     res.status(201).json(populatedPost);
   } catch (err) {
